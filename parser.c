@@ -1,3 +1,7 @@
+/* Fall 2021 COP 3402 HW1
+   Anjaly Davis, Jennifer Nguyen
+   October 31st, 2021 */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
