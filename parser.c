@@ -1,4 +1,4 @@
-/* Fall 2021 COP 3402 HW1
+/* Fall 2021 COP 3402 HW3
    Anjaly Davis, Jennifer Nguyen
    October 31st, 2021 */
 
