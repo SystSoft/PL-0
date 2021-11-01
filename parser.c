@@ -21,12 +21,7 @@ void printassemblycode();
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
     code = NULL;
-    instruction *code = malloc(sizeof(struct instruction) * MAX_CODE_LENGTH);
-    symbol *table = malloc(sizeof(struct symbol) * MAX_SYMBOL_COUNT);
-    cIndex = 0;
-    tIndex = 0;
     
-    program(list);
  
     
     return code;
