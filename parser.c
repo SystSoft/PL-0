@@ -276,6 +276,52 @@ void condition(lexeme *list, int procedure_idx)
 		}
 	}
 }
+	
+void expression(lexeme *list, int procedure_idx)
+{
+	if(list[procedure_idx]==subsym)
+	{
+		procedure_idx++;
+		TERM
+		emit(2,0,1); //NEG
+		
+		while((list[procedure_idx]==addsym)||(list[procedure_idx]==subsym))
+		{
+			if(list[procedure_idx]==addsym)
+			{
+				procedure_idx++;
+				TERM
+				emit(2,0,2); //ADD
+			else
+				procedure_idx++;
+				TERM
+				emit(2,0,3); //SUB
+			}
+		}
+	else 
+		if(list[procedure_idx]==addsym)
+			procedure_idx++;
+		TERM
+				
+		while((list[procedure_idx]==addsym)||(list[procedure_idx]==subsym))
+		{
+			if(list[procedure_idx]==addsym)
+			{
+				procedure_idx++;
+				TERM
+				emit(2,0,2); //ADD
+			else
+				procedure_idx++;
+				TERM
+				emit(2,0,3); //SUB
+			}
+		}
+	}
+	if(list[procedure_idx]== ???)
+	{
+		printparseerror(17);
+	}
+}
         
 void printparseerror(int err_code)
 {
