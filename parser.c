@@ -325,48 +325,47 @@ void condition(lexeme *list, int procedure_idx)
 	
 void expression(lexeme *list, int procedure_idx)
 {
-	if(list[procedure_idx]==subsym)
-	{
-		procedure_idx++;
-		TERM
-		emit(2,0,1); //NEG
-		
-		while((list[procedure_idx]==addsym)||(list[procedure_idx]==subsym))
-		{
-			if(list[procedure_idx]==addsym)
-			{
-				procedure_idx++;
-				TERM
-				emit(2,0,2); //ADD
-			else
-				procedure_idx++;
-				TERM
-				emit(2,0,3); //SUB
-			}
-		}
-	else 
-		if(list[procedure_idx]==addsym)
-			procedure_idx++;
-		TERM
-				
-		while((list[procedure_idx]==addsym)||(list[procedure_idx]==subsym))
-		{
-			if(list[procedure_idx]==addsym)
-			{
-				procedure_idx++;
-				TERM
-				emit(2,0,2); //ADD
-			else
-				procedure_idx++;
-				TERM
-				emit(2,0,3); //SUB
-			}
-		}
-	}
-	if(list[procedure_idx]== ???)
-	{
-		printparseerror(17);
-	}
+    if(list[procedure_idx].type == subsym)
+    {
+        procedure_idx++;
+        TERM
+        emit(2,curlevel,1); //NEG
+        
+        while((list[procedure_idx].type==addsym)||(list[procedure_idx].type==subsym))
+        {
+            if(list[procedure_idx].type ==addsym)
+            {
+                procedure_idx++;
+                TERM
+                emit(2,curlevel,2); //ADD
+            else
+                procedure_idx++;
+                TERM
+                emit(2,curlevel,3); //SUB
+            }
+        }
+    else
+    {
+        if(list[procedure_idx].type==addsym)
+            procedure_idx++;
+        TERM
+                
+        while((list[procedure_idx].type==addsym)||(list[procedure_idx].type==subsym))
+        {
+            if(list[procedure_idx].type==addsym)
+            {
+                procedure_idx++;
+                TERM
+                emit(2,curlevel,2); //ADD
+            else
+                procedure_idx++;
+                TERM
+                emit(2,curlevel,3); //SUB
+            }
+        }
+    }
+    if(list[procedure_idx].type==lparensym || list[procedure_idx].type==identsym ||  list[procedure_idx].type==numbersym || list[procedure_idx].type==oddsym ) // identifier number odd
+        printparseerror(17);
 }
 	
 void term(lexeme *list, int procedure_idx)
