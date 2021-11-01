@@ -322,6 +322,32 @@ void expression(lexeme *list, int procedure_idx)
 		printparseerror(17);
 	}
 }
+	
+void term(lexeme *list, int procedure_idx)
+{
+	FACTOR
+	while((list[procedure_idx]==multsym)||(list[procedure_idx]==divsym)||(list[procedure_idx]==modsym))
+	{
+		if(list[procedure_idx]==multsym)
+		{
+			procedure_idx++;
+			FACTOR
+			emit(2,0,4); //MUL
+		}
+		else if(list[procedure_idx]==divsym)
+		{
+			procedure_idx++;
+			FACTOR
+			emit(2,0,5); //DIV
+		}
+		else
+		{
+			procedure_idx++;
+			FACTOR
+			emit(2,0,7); //MOD
+		}
+	}
+}
         
 void printparseerror(int err_code)
 {
