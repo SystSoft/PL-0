@@ -21,21 +21,13 @@ void printassemblycode();
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
     code = NULL;
-    program();
-    if(HALT) return;
-    cIndex--;
+    instruction *code = malloc(sizeof(struct instruction) * MAX_CODE_LENGTH);
+    symbol *table = malloc(sizeof(struct symbol) * MAX_SYMBOL_COUNT);
+    cIndex = 0;
+    tIndex = 0;
     
-    
-        fprintf(fout, "No errors, program is syntactically correct\n");
-        printf("\nNo errors, program is syntactically correct\nExecuting:\n");
-
-        fprintf(fout, "\nAssembly Code\n");
-
-        int i;
-        for(i = 0; i < cIndex; i++)
-    {
-        
-        
+    program(list);
+ 
     
     return code;
 }
@@ -122,6 +114,7 @@ void program(lexeme *list)
     emit(7, 0, 0);            // JMP
     addToSymbolTable(3, "main", 0, 0, 0, 0); // add to symbol table
     curlevel = -1;
+    
     block(list, curlevel);
     if (list[tIndex].type != periodsym)
         printparseerror(1);
