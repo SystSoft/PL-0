@@ -394,6 +394,48 @@ void term(lexeme *list, int procedure_idx)
 		}
 	}
 }
+	
+void factor(lexeme *list, int procedure_idx)
+{
+	if(list[procedure_idx]==identsym)
+	{
+		symldx_var = FINDSYMBOL(list[procedure_idx],2);
+		symldx_const = FINDSYMBOL(list[procedure_idx],1);
+		
+		if((symldx_var==-1)&&(symldx_const==-1))
+		{
+			if(FINDSYMBOL(list[procedure_idx],3)!=-1)
+			{
+				printparseerror(19);
+			else
+				printparseerror(18);
+			}
+		}
+		if(symldx_var==-1) (const)
+		{
+			emit(1,0,table[symldx_const].val);
+		else if((symldx_const=-1)||(table[symldx_var].curlevel)>(table[symldx_const].curlevel;
+			emit(3,curlevel-table[symldx_var].curlevel,table[symldx_var].addr)
+		else
+			emit(1,0,table[symldx_const].val);
+			procedure_idx++;
+		else if(list[procedure_idx].type==numbersym)
+			emit(1,0,0);
+			procedure_idx++;
+		else if(list[procedure_idx].type==lparentsym)
+			procedure_idx++
+			expression(list,procedure_idx);
+			
+			if(list[procedure_idx].type!=rparentsym)
+			{
+				printparseerror(11);
+			}
+			procedure_idx++;
+		else
+			printparseerror(12);
+		}
+	}
+}	
         
 void printparseerror(int err_code)
 {
