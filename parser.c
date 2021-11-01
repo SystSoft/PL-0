@@ -278,41 +278,41 @@ void condition(lexeme *list, int procedure_idx)
         
         else
         {
-            expression(list);
+            expression(list,procedure_idx);
             if(list[procedure_idx].type == eqlsym)
             {
                 procedure_idx++;
-                expression(list);
+                expression(list,procedure_idx);
                 emit(2, curlevel, 8); //EQL
             }
             else if(list[procedure_idx].type == neqsym)
             {
                 procedure_idx++;
-                expression(list);
+                expression(list,procedure_idx);
                 emit(2, curlevel, 9); //NEQ
             }
             else if(list[procedure_idx].type == lsssym)
             {
                 procedure_idx++;
-                expression(list);
+                expression(list,procedure_idx);
                 emit(2, curlevel, 10); //LSS
             }
             else if(list[procedure_idx].type == leqsym)
             {
                 procedure_idx++;
-                expression(list);
+                expression(list,procedure_idx);
                 emit(2, curlevel, 11); //LEQ
             }
             else if(list[procedure_idx].type == gtrsym)
             {
                 procedure_idx++;
-                expression(list);
+                expression(list,procedure_idx);
                 emit(2, curlevel, 12); //GTR
             }
             else if(list[procedure_idx].type == geqsym)
             {
                 procedure_idx++;
-                expression(list);
+                expression(list,procedure_idx);
                 emit(2, curlevel, 13); //GEQ
             }
             else
