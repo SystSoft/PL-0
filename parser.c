@@ -49,30 +49,71 @@ void addToSymbolTable(int k, char n[], int v, int l, int a, int m)
 	table[tIndex].mark = m;
 	tIndex++;
 }
-int MULTIPLEDECLARATIONCHECK(lexeme list)
+int MULTIPLEDECLARATIONCHECK(lexeme token)
 {
-    // linear search symbol table for the passes token
+    int i;
+    
+    // linear search symbol table for the token
+    for (i = 0; i < tIndex; i++)
+    {
+        // if symbol table has the name given
+        if (table[i].name == token.name)
+        {
+            // checks to see if it’s unmarked
+            if (table[i].mark == 0)
+            {
+                // if level is = to current level, return index
+                if (table[i].level == level)
+                    return i;
+            }
+        }
+            
+    }
+    // if not found return -1
+    return -1;
 }
 
-int findsymbol(lexeme list, int k)
+int findsymbol(lexeme token, int k)
 {
-    // linear search for given name & k value & unmarked
-    // maximized level value
+    int i;
+    
+    // linear search symbol table for the token backwards
+    for (i = tIndex; i > 0; i--)
+    {
+        // correct name AND kind value AND is unmarked.
+        if (table[i].name == token.name && table[i].kind == k && table[i].mark == 0)
+        {
+            return i;
+        }
+    }
+    // if not found
+    return -1;
 }
 
 void mark()
 {
-    // This function starts at the end of the table and works backward.
-    // ignores marked entries
-    // if entry’s level is equal to the current level, it marks that entry
+    // linear search symbol table for the token backwards
+    int i = tIndex;
+    
+    // stop when it finds an unmarked entry whose level is less than the current level
+    while (table[i].mark == 0 && table[i].level > level)
+    {
+        // ignores marked entries
+        if (table[i].mark == 1)
+            continue;
+        
+        // if entry’s level is equal to the current level, it marks that entry
+        if (table[i].level == level)
+            table[i].mark = 1;
+    }
 }
 
 void program(lexeme *list)
 {
     emit(7, 0, 0);            // JMP
     addToSymbolTable(3, "main", 0, 0, 0, 0); // add to symbol table
-    table.level = -1
-    block(list);
+    level = -1;
+    block(list, level);
     if (list[tIndex].type != periodsym)
         printparseerror(1);
         
@@ -90,7 +131,7 @@ void block(lexeme *list)
 {
         int procedure_idx, x;
         
-        symbol_table.level++;
+        level++;
         procedure_idx = tIndex - 1
         const_declaration(list, procedure_idx);
         
@@ -100,14 +141,14 @@ void block(lexeme *list)
         
         table[procedure_idx].addr = cindex * 3
         
-        if (symbol_table.level == 0)
+        if (table.level == 0)
             emit(6, 0, x);          // INC
         else
             emit(6, 0, x + 3);
         
         STATEMENT
         MARK
-        symbol_table.level--;
+       level--;
 }
 
 int const_declaration(lexeme *list, int procedure_idx)
@@ -136,7 +177,7 @@ int const_declaration(lexeme *list, int procedure_idx)
             if (list[procedure_idx].type) != numbersym)
                 printparseerror(2));
             
-            addToSymbolTable(1, identsave, list[procedure_idx].name, symbol_table.level, 0, 0);
+            addToSymbolTable(1, identsave, list[procedure_idx].name, level, 0, 0);
             procedure_idx++;
         }while (list[procedure_idx].type == commasym);
         
@@ -169,9 +210,9 @@ int var_declaration(lexeme *list, int procedure_idx)
             if (symidx != -1)
                 printparseerror(18);
             if level == 0
-                addToSymbolTable(2, list[procedure_idx].name, 0, symbol_table.level, numVars - 1, 0);
+                addToSymbolTable(2, list[procedure_idx].name, 0, level, numVars - 1, 0);
             else
-                addToSymbolTable(2, list[procedure_idx].name, 0, symbol_table.level, numVars+2, 0);
+                addToSymbolTable(2, list[procedure_idx].name, 0, level, numVars+2, 0);
             procedure_idx++;
         }while (list[procedure_idx].type == commasym);
         
@@ -200,7 +241,7 @@ void procedure_dec(lexeme *list, int procedure_idx)
             if (symidx != -1)
                 printparseerror
             
-            addToSymbolTable(3, list[procedure_idx].name, 0, table.level, 0, 0)
+            addToSymbolTable(3, list[procedure_idx].name, 0, level, 0, 0)
             procedure_idx++;
             
             if (list[procedure_idx].type != semicolonsym)
