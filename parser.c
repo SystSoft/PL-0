@@ -270,53 +270,57 @@ void procedure_dec(lexeme *list, int procedure_idx)
 	
 void condition(lexeme *list, int procedure_idx)
 {
-	if(list[procedure_idx]==oddsym)
-	{
-		procedure_idx++;
-		expression(list);
-		emit(2,0,6);
-		
-		else
-		{
-			expression(list);
-			if(list[procedure_idx]==eqlsym)
-			{
-				procedure_idx++;
-				expression(list);
-				emit(2,0,8); //EQL
-				
-			else if(list[procedure_idx]==neqsym)
-				procedure_idx++;
-				expression(list);
-				emit(2,0,9); //NEQ
-			
-			else if(list[procedure_idx]==Isssym)
-				procedure_idx++;
-				expression(list);
-				emit(2,0,10); //LSS
-				
-			else if(list[procedure_idx]==leqsym)
-				procedure_idx++;
-				expression(list);
-				emit(2,0,11); //LEQ
-				
-			else if(list[procedure_idx]==gtrsym)
-				procedure_idx++;
-				expression(list);
-				emit(2,0,12); //GTR
-				
-			else if(list[procedure_idx]==geqsym)
-				procedure_idx++;
-				expression(list);
-				emit(2,0,13); //GEQ
-			}
-			
-			else
-			{
-				printparseerror(10);
-			}
-		}
-	}
+    if(list[procedure_idx].type == oddsym)
+    {
+        procedure_idx++;
+        expression(list);
+        emit(2, curlevel,6);
+        
+        else
+        {
+            expression(list);
+            if(list[procedure_idx].type == eqlsym)
+            {
+                procedure_idx++;
+                expression(list);
+                emit(2, curlevel, 8); //EQL
+            }
+            else if(list[procedure_idx].type == neqsym)
+            {
+                procedure_idx++;
+                expression(list);
+                emit(2, curlevel, 9); //NEQ
+            }
+            else if(list[procedure_idx].type == lsssym)
+            {
+                procedure_idx++;
+                expression(list);
+                emit(2, curlevel, 10); //LSS
+            }
+            else if(list[procedure_idx].type == leqsym)
+            {
+                procedure_idx++;
+                expression(list);
+                emit(2, curlevel, 11); //LEQ
+            }
+            else if(list[procedure_idx].type == gtrsym)
+            {
+                procedure_idx++;
+                expression(list);
+                emit(2, curlevel, 12); //GTR
+            }
+            else if(list[procedure_idx].type == geqsym)
+            {
+                procedure_idx++;
+                expression(list);
+                emit(2, curlevel, 13); //GEQ
+            }
+            else
+            {
+                printparseerror(10);
+            }
+        }
+    }
 }
 	
 void expression(lexeme *list, int procedure_idx)
