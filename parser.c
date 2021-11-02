@@ -43,6 +43,7 @@ instruction *parse(lexeme *list, int printTable, int printCode)
     tIndex = 0;
     
     program(list);
+    printassemblycode();
  
     return code;
 }
