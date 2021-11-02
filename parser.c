@@ -682,8 +682,6 @@ void factor(lexeme *list, int procedure_idx)
     {
         procedure_idx++;
         expression(list,procedure_idx);
-        if(HALT)
-        return;
         
         if(list[procedure_idx].type!=rparentsym)
         
