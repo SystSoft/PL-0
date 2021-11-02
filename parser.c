@@ -213,7 +213,7 @@ void const_declaration(lexeme *list, int procedure_idx)
                 return;
             }
             
-            addToSymbolTable(1, identsave, atoi(list[procedure_idx].name, curlevel, 0);
+            addToSymbolTable(1, identsave, atoi(list[procedure_idx].name), curlevel, 0, 0);
             procedure_idx++;
         }while (list[procedure_idx].type == commasym);
     }
@@ -391,7 +391,7 @@ void statement(lexeme *list, int procedure_idx)
         {
             procedure_idx++;
             condition(list,procedure_idx);
-            jpcIdx = cIndex;
+            int jpcIdx = cIndex;
             emit(8,curlevel,0); //JPC
             
             if(list[procedure_idx].type!=thensym)
