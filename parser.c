@@ -175,7 +175,7 @@ void block(lexeme *list)
 
 void const_declaration(lexeme *list, int procedure_idx)
 {
-    char *identsave[12];
+    char *identsave = NULL;
     if (list[procedure_idx].type == constsym)
     {
         do
@@ -342,6 +342,7 @@ void statement(lexeme *list, int procedure_idx)
         int symldx = findsymbol(list[procedure_idx],2);
         
         if(symldx==-1)
+        {
             if (findsymbol(list[procedure_idx],1) != findsymbol(list[procedure_idx],3))
             {
                 printparseerror(7);         // does not have kind 3
@@ -354,6 +355,7 @@ void statement(lexeme *list, int procedure_idx)
                 code = NULL;
                 return;
             }
+        }
         procedure_idx++;
         if(list[procedure_idx].type!=assignsym)
         {
@@ -414,7 +416,7 @@ void statement(lexeme *list, int procedure_idx)
                 procedure_idx++;
                 statement(list,procedure_idx);
                 code[jmpIdx].m = cIndex*3;
-            }    
+            }
             else
             {
                 code[jpcIdx].m = cIndex*3;
@@ -510,7 +512,7 @@ void condition(lexeme *list, int procedure_idx)
         procedure_idx++;
         expression(list,procedure_idx);
         emit(2, curlevel,6);
-    }   
+    }
         else
         {
             expression(list,procedure_idx);
@@ -574,7 +576,7 @@ void expression(lexeme *list, int procedure_idx)
                 procedure_idx++;
                 term(list, procedure_idx);
                 emit(2,curlevel,2); //ADD
-            }    
+            }
             else
             {
                 procedure_idx++;
@@ -582,7 +584,7 @@ void expression(lexeme *list, int procedure_idx)
                 emit(2,curlevel,3); //SUB
             }
         }
-    }    
+    }
     else
     {
         if(list[procedure_idx].type==addsym)
@@ -664,13 +666,10 @@ void factor(lexeme *list, int procedure_idx)
         
         if(symIdx_var==-1)
             emit(1,0,table[symIdx_const].val);      // LIT
-        
         else if((symIdx_const=-1)|| (table[symIdx_var].level) > (table[symIdx_const].level))
             emit(3, curlevel-table[symIdx_var].level, table[symIdx_var].addr);      //LOD
         else
-        {
             emit(1,curlevel,table[symIdx_const].val);
-        }
         procedure_idx++;
     }
     else if(list[procedure_idx].type==numbersym)
@@ -678,17 +677,17 @@ void factor(lexeme *list, int procedure_idx)
         emit(1,curlevel,0);
         procedure_idx++;
     }
-    else if(list[procedure_idx].type==lparentsym)
+    else if(list[procedure_idx].type==lparensym)
     {
         procedure_idx++;
         expression(list,procedure_idx);
-        
-        if(list[procedure_idx].type!=rparentsym)
-        
+    
+        if(list[procedure_idx].type!=rparensym)
+        {
             printparseerror(11);
             code = NULL;
             return;
-
+        }
         procedure_idx++;
     }
     else
