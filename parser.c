@@ -20,9 +20,13 @@ void printassemblycode();
 
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
-    code = NULL;
     
- 
+    code = NULL;
+    symbol *table = malloc(sizeof(struct symbol) * MAX_SYMBOL_COUNT);
+    cIndex = 0;
+    tIndex = 0;
+    
+    program(list);
     
     return code;
 }
