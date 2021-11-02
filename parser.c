@@ -175,7 +175,7 @@ void block(lexeme *list)
 
 void const_declaration(lexeme *list, int procedure_idx)
 {
-    char identsave[12];
+    char *identsave[12];
     if (list[procedure_idx].type == constsym)
     {
         do
@@ -408,13 +408,15 @@ void statement(lexeme *list, int procedure_idx)
             statement(list,procedure_idx);
             if(list[procedure_idx].type==elsesym)
             {
-                jmpIdx = cIndex;
+                int jmpIdx = cIndex;
                 emit(7,curlevel,0); //JMP
                 code[jpcIdx].m = cIndex*3;
                 procedure_idx++;
                 statement(list,procedure_idx);
                 code[jmpIdx].m = cIndex*3;
+            }    
             else
+            {
                 code[jpcIdx].m = cIndex*3;
             }
             return;
@@ -422,7 +424,7 @@ void statement(lexeme *list, int procedure_idx)
         if(list[procedure_idx].type==whilesym)
         {
             procedure_idx++;
-            loopIdx = cIndex;
+            int loopIdx = cIndex;
             condition(list,procedure_idx);
             
             if(list[procedure_idx].type!=dosym)
@@ -432,8 +434,8 @@ void statement(lexeme *list, int procedure_idx)
                 return;
             }
             procedure_idx++;
-            jpcIdx = cIndex;
-            emit(8,curlevel,0) //JPC
+            int jpcIdx = cIndex;
+            emit(8,curlevel,0); //JPC
             statement(list,procedure_idx);
             emit(7,curlevel,loopIdx*3);
             code[jpcIdx].m = cIndex*3;
@@ -448,7 +450,7 @@ void statement(lexeme *list, int procedure_idx)
                 code = NULL;
                 return;
             }
-            symIdx = findsymbol(list[procedure_idx],2);
+            int symIdx = findsymbol(list[procedure_idx],2);
             if(symIdx == -1)
             {
                 if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],3))
@@ -456,7 +458,9 @@ void statement(lexeme *list, int procedure_idx)
                     printparseerror(6);         //missing kind 2
                     code = NULL;
                     return;
+                }
                 else
+                {
                     printparseerror(19);
                     code = NULL;
                     return;
@@ -470,14 +474,14 @@ void statement(lexeme *list, int procedure_idx)
         if(list[procedure_idx].type==writesym)
         {
             procedure_idx++;
-            expression(list.procedure_idx);
+            expression(list,procedure_idx);
             emit(9,curlevel,1); //WRITE
             return;
         }
         if(list[procedure_idx].type==callsym)
         {
             procedure_idx++;
-            symIdx = findsymbol(list[procedure_idx],3);
+            int symIdx = findsymbol(list[procedure_idx],3);
             if(symIdx == -1)
             {
                 if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],2))
@@ -504,9 +508,9 @@ void condition(lexeme *list, int procedure_idx)
     if(list[procedure_idx].type == oddsym)
     {
         procedure_idx++;
-        expression(list);
+        expression(list,procedure_idx);
         emit(2, curlevel,6);
-        
+    }   
         else
         {
             expression(list,procedure_idx);
@@ -551,7 +555,6 @@ void condition(lexeme *list, int procedure_idx)
                 printparseerror(10);
                 code = NULL;
                 return;
-            }
         }
     }
 }
@@ -571,17 +574,20 @@ void expression(lexeme *list, int procedure_idx)
                 procedure_idx++;
                 term(list, procedure_idx);
                 emit(2,curlevel,2); //ADD
+            }    
             else
+            {
                 procedure_idx++;
                 term(list, procedure_idx);
                 emit(2,curlevel,3); //SUB
             }
         }
+    }    
     else
     {
         if(list[procedure_idx].type==addsym)
             procedure_idx++;
-        TERM
+        term(list,procedure_idx);
                 
         while((list[procedure_idx].type==addsym)||(list[procedure_idx].type==subsym))
         {
@@ -590,14 +596,16 @@ void expression(lexeme *list, int procedure_idx)
                 procedure_idx++;
                 term(list, procedure_idx);
                 emit(2,curlevel,2); //ADD
+            }
             else
+            {
                 procedure_idx++;
                 term(list, procedure_idx);
                 emit(2,curlevel,3); //SUB
             }
         }
     }
-    if(list[procedure_idx].type==lparensym || list[procedure_idx].type==identsym ||  list[procedure_idx].type==numbersym || list[procedure_idx].type==oddsym ) // identifier number odd
+    if((list[procedure_idx].type==lparensym)||(list[procedure_idx].type==identsym)||(list[procedure_idx].type==numbersym)||(list[procedure_idx].type==oddsym)) // identifier number odd
     {
         printparseerror(17);
         code = NULL;
@@ -635,12 +643,12 @@ void factor(lexeme *list, int procedure_idx)
 {
     if(list[procedure_idx].type==identsym)
     {
-        symldx_var = FINDSYMBOL(list[procedure_idx],2);
-        symldx_const = FINDSYMBOL(list[procedure_idx],1);
+        int symIdx_var = findsymbol(list[procedure_idx],2);
+        int symIdx_const = findsymbol(list[procedure_idx],1);
         
-        if((symldx_var==-1)&&(symldx_const==-1))
+        if((symIdx_var==-1)&&(symIdx_const==-1))
         {
-            if(FINDSYMBOL(list[procedure_idx],3)!=-1)
+            if(findsymbol(list[procedure_idx],3)!=-1)
             {
                 printparseerror(19);
                 code = NULL;
@@ -662,8 +670,8 @@ void factor(lexeme *list, int procedure_idx)
         else
         {
             emit(1,curlevel,table[symIdx_const].val);
-            procedure_idx++;
         }
+        procedure_idx++;
     }
     else if(list[procedure_idx].type==numbersym)
     {
@@ -674,13 +682,15 @@ void factor(lexeme *list, int procedure_idx)
     {
         procedure_idx++;
         expression(list,procedure_idx);
+        if(HALT)
+        return;
         
         if(list[procedure_idx].type!=rparentsym)
-        {
+        
             printparseerror(11);
             code = NULL;
             return;
-        }
+
         procedure_idx++;
     }
     else
