@@ -317,135 +317,166 @@ void procedure_dec(lexeme *list, int procedure_idx)
 
 void statement(lexeme *list, int procedure_idx)
 {
-	if(list[procedure_idx].type==identsym)
-	{
-		symldx = findsymbol(list[procedure_idx],2);
-		if(symldx==-1);
-			if (findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],3))
-			{
-				printparseerror();
-			else
-				printparseerror();
-			}
-		procedure_idx++;
-		if(list[procedure_idx].type!=assignsym)
-		{
-			printparseerror();
-		}
-		procedure_idx++;
-		expression(list,procedure_idx);
-		emit(4,curlevel-table[symldx].curlevel,table[symldx].addr);
-		return;
-	}
-	if(list[procedure_idx].type==beginsym)
-	{
-		do
-		{
-			procedure_idx++;
-			statement(list,procedure_idx);
-		}while(list[procedure_idx].type==semicolonsym);
-		
-		if(list[procedure_idx].type!=endsym)
-		{
-			if((list[procedure_idx].type==identsym)||(list[procedure_idx].type==beginsym)||(list[procedure_idx].type==ifsym)||(list[procedure_idx].type==whilesym)||(list[procedure_idx].type==readsym)||(list[procedure_idx].type==writesym)||(list[procedure_idx].type==callsym))
-			{
-				printparseerror();
-			else
-				printparseerror();
-			}
-		}
-		procedure_idx++;
-		return;
-		if(list[procedure_idx].type==ifsym)
-		{
-			procedure_idx++;
-			condition(list,procedure_idx);
-			jpcIdx = cindex;
-			emit(8,0,0); //JPC
-			
-			if(list[procedure_idx].type!=thensym)
-			{
-				printparseerror();
-			}
-			procedure_idx++;
-			statement(list,procedure_idx);
-			if(list[procedure_idx].type==elsesym)
-			{
-				jmpIdx = cindex;
-				emit(7,0,0); //JMP
-				code[jpcIdx].m = cindex*3;
-				procedure_idx++;
-				statement(list,procedure_idx);
-				code[jmpIdx].m = cindex*3;
-			else
-				code[jpcIdx].m = cindex*3;
-			}
-			return;
-		}
-		if(list[procedure_idx].type==whilesym)
-		{
-			procedure_idx++;
-			loopIdx = cindex;
-			condition(list,procedure_idx);
-			
-			if(list[procedure_idx].type!=dosym)
-			{
-				printparseerror();
-			}
-			procedure_idx++;
-			jpcIdx = cindex;
-			emit(8,0,0) //JPC
-			statement(list,procedure_idx);
-			emit(7,0,loopIdx*3);
-			code[jpcIdx].m = cindex*3;
-			return;
-		}
-		if(list[procedure_idx].type==readsym)
-		{
-			procedure_idx++;
-			if(list[procedure_idx].type!=identsym)
-			{
-				printparseerror();
-			}
-			symIdx = findsymbol(list[procedure_idx],2);
-			if(symIdx == -1)
-			{
-				if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],3))
-				{
-					printparseerror();
-				else
-					printparseerror();
-				}
-			}
-			procedure_idx++;
-			emit(0,9,2); //READ
-			emit(4,curlevel-table[symIdx].level,table[symIdx].addr); //STO
-			return;
-		}
-		if(list[procedure_idx].type==writesym)
-		{
-			procedure_idx++;
-			expression(list,procedure_idx);
-			emit(0,9,1); //WRITE
-			return;
-		}
-		if(list[procedure_idx].type==callsym)
-		{
-			procedure_idx++;
-			symIdx = findsymbol(list[procedure_idx],3);
-			if(symIdx == -1)
-			{
-				if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],2))
-				{
-					printparseerror();
-				else
-					printparseerror();
-				}
-			}
-			procedure_idx++;
-			emit(5,curlevel-table[symIdx].level,symIdx); //CAL
-		}
-	}
+    if(list[procedure_idx].type==identsym)
+    {
+        symldx = findsymbol(list[procedure_idx],2);
+        
+        if(symldx==-1);
+            if (findsymbol(list[procedure_idx],1) != findsymbol(list[procedure_idx],3))
+            {
+                printparseerror(7);         // does not have kind 3
+                code = NULL;
+                return;
+            }
+            else
+            {
+                printparseerror(6);         // does not have kind 2
+                code = NULL;
+                return;
+            }
+        procedure_idx++;
+        if(list[procedure_idx].type!=assignsym)
+        {
+            printparseerror(5);         // missing :=
+            code = NULL;
+            return;
+        }
+        procedure_idx++;
+        expression(list,procedure_idx);
+        emit(4, curlevel-table[symldx].level, table[symldx].addr);          //STO
+        return;
+    }
+    if(list[procedure_idx].type==beginsym)
+    {
+        do
+        {
+            procedure_idx++;
+            statement(list,procedure_idx);
+        }while(list[procedure_idx].type==semicolonsym);
+        
+        if(list[procedure_idx].type!=endsym)
+        {
+            if((list[procedure_idx].type==identsym)||(list[procedure_idx].type==beginsym)||(list[procedure_idx].type==ifsym)||(list[procedure_idx].type==whilesym)||(list[procedure_idx].type==readsym)||(list[procedure_idx].type==writesym)||(list[procedure_idx].type==callsym))
+            {
+                printparseerror(16);
+                code = NULL;
+                return;
+            }
+            else
+            {
+                printparseerror(15);
+                code = NULL;
+                return;
+            }
+        }
+        procedure_idx++;
+        return;
+        if(list[procedure_idx].type==ifsym)
+        {
+            procedure_idx++;
+            condition(list,procedure_idx);
+            jpcIdx = cindex;
+            emit(8,curlevel,0); //JPC
+            
+            if(list[procedure_idx].type!=thensym)
+            {
+                printparseerror(8);
+                code = NULL;
+                return;
+            }
+            procedure_idx++;
+            statement(list,procedure_idx);
+            if(list[procedure_idx].type==elsesym)
+            {
+                jmpIdx = cindex;
+                emit(7,curlevel,0); //JMP
+                code[jpcIdx].m = cindex*3;
+                procedure_idx++;
+                statement(list,procedure_idx);
+                code[jmpIdx].m = cindex*3;
+            else
+                code[jpcIdx].m = cindex*3;
+            }
+            return;
+        }
+        if(list[procedure_idx].type==whilesym)
+        {
+            procedure_idx++;
+            loopIdx = cindex;
+            condition(list,procedure_idx);
+            
+            if(list[procedure_idx].type!=dosym)
+            {
+                printparseerror(9);
+                code = NULL;
+                return;
+            }
+            procedure_idx++;
+            jpcIdx = cindex;
+            emit(8,curlevel,0) //JPC
+            statement(list,procedure_idx);
+            emit(7,curlevel,loopIdx*3);
+            code[jpcIdx].m = cindex*3;
+            return;
+        }
+        if(list[procedure_idx].type==readsym)
+        {
+            procedure_idx++;
+            if(list[procedure_idx].type!=identsym)
+            {
+                printparseerror(6);         // missing identifier
+                code = NULL;
+                return;
+            }
+            symIdx = findsymbol(list[procedure_idx],2);
+            if(symIdx == -1)
+            {
+                if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],3))
+                {
+                    printparseerror(6);         //missing kind 2
+                    code = NULL;
+                    return;
+                else
+                    printparseerror(19);
+                    code = NULL;
+                    return;
+                }
+            }
+            procedure_idx++;
+            emit(9, curlevel,2); //READ
+            emit(4, curlevel-table[symIdx].level, table[symIdx].addr); //STO
+            return;
+        }
+        if(list[procedure_idx].type==writesym)
+        {
+            procedure_idx++;
+            expression(list.procedure_idx);
+            emit(9,curlevel,1); //WRITE
+            return;
+        }
+        if(list[procedure_idx].type==callsym)
+        {
+            procedure_idx++;
+            symIdx = findsymbol(list[procedure_idx],3);
+            if(symIdx == -1)
+            {
+                if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],2))
+                {
+                    printparseerror(7);         //missing kind 3
+                    code = NULL;
+                    return;
+                }
+                else
+                {
+                    printparseerror(19);
+                    code = NULL;
+                    return;
+                }
+            }
+            procedure_idx++;
+            emit(5,curlevel-table[symIdx].level,symIdx); //CAL
+        }
+    }
 }
     
 void condition(lexeme *list, int procedure_idx)
