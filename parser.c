@@ -603,14 +603,14 @@ void factor(lexeme *list, int procedure_idx)
             }
         }
         
-        if(symldx_var==-1)
-            emit(1,0,table[symldx_const].val);      // LIT
+        if(symIdx_var==-1)
+            emit(1,0,table[symIdx_const].val);      // LIT
         
-        else if((symldx_const=-1)|| (table[symldx_var].level) > (table[symldx_const].level))
-            emit(3, curlevel-table[symldx_var].level, table[symldx_var].addr);      //LOD
+        else if((symIdx_const=-1)|| (table[symIdx_var].level) > (table[symIdx_const].level))
+            emit(3, curlevel-table[symIdx_var].level, table[symIdx_var].addr);      //LOD
         else
         {
-            emit(1,curlevel,table[symldx_const].val);
+            emit(1,curlevel,table[symIdx_const].val);
             procedure_idx++;
         }
     }
