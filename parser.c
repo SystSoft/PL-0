@@ -37,14 +37,18 @@ void factor(lexeme *list, int procedure_idx);
 
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
-    code = NULL;
     instruction *code = malloc(sizeof(struct instruction) * MAX_CODE_LENGTH);
     symbol *table = malloc(sizeof(struct symbol) * MAX_SYMBOL_COUNT);
     cIndex = 0;
     tIndex = 0;
     
     program(list);
-    printassemblycode();
+    
+    if (printTable == 1)
+        printassemblycode();
+    
+    if (printCode == 1)
+        printsymboltable();
     
     code[cIndex].opcode = -1;
     
@@ -69,6 +73,7 @@ void addToSymbolTable(int k, char n[], int v, int l, int a, int m)
     table[tIndex].mark = m;
     tIndex++;
 }
+
 int MULTIPLEDECLARATIONCHECK(lexeme token)
 {
     int i;
@@ -580,6 +585,7 @@ void factor(lexeme *list, int procedure_idx)
         printparseerror(12);
 }
         
+
 void printparseerror(int err_code)
 {
     switch (err_code)
