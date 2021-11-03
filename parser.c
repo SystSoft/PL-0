@@ -37,8 +37,8 @@ void factor(lexeme *list, int procedure_idx);
 
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
-    instruction *code = malloc(sizeof(struct instruction) * MAX_CODE_LENGTH);
-    symbol *table = malloc(sizeof(struct symbol) * MAX_SYMBOL_COUNT);
+    code = malloc(MAX_CODE_LENGTH * sizeof(struct instruction));
+    table = malloc(MAX_SYMBOL_COUNT * sizeof(struct symbol));
     cIndex = 0;
     tIndex = 0;
     
