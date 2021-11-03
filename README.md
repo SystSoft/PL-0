@@ -1,6 +1,6 @@
-/*Fall 2021 COP 3402 HW3
+   Fall 2021 COP 3402 HW3
    Anjaly Davis, Jennifer Nguyen
-   November 2nd, 2021*/
+   November 2nd, 2021
    
    In this programming assignment, the file contains the program written in the PL/0 language. We have to implement a Recursive Descent Parser and Intermediate Code Generator for PL/0. In addition, we have to create a compiler driver to combine all the compiler parts into one single program.
    
