@@ -140,7 +140,7 @@ void program(lexeme *list)
     {
         printparseerror(1);
         code = NULL;
-        return;
+        
     }
         
     emit(0, 9, 3);        // HALT
@@ -189,7 +189,7 @@ void const_declaration(lexeme *list, int procedure_idx)
             {
                 printparseerror(2);         // ident missing
                 code = NULL;
-                return;
+                
                 
             }
             
@@ -199,7 +199,7 @@ void const_declaration(lexeme *list, int procedure_idx)
             {
                 printparseerror(18);
                 code = NULL;
-                return;
+                
                 
             }
             
@@ -210,7 +210,7 @@ void const_declaration(lexeme *list, int procedure_idx)
             {
                 printparseerror(2);             // := missing
                 code = NULL;
-                return;
+                
             }
 
             procedure_idx++;
@@ -219,7 +219,7 @@ void const_declaration(lexeme *list, int procedure_idx)
             {
                 printparseerror(2);
                 code = NULL;
-                return;
+                
                 
             }
             
@@ -234,13 +234,13 @@ void const_declaration(lexeme *list, int procedure_idx)
         {
             printparseerror(13);
             code = NULL;
-            return;
+            
         }
         else
         {
             printparseerror(14);
             code = NULL;
-            return;
+            
         }
     }
     procedure_idx++;
@@ -303,7 +303,7 @@ void procedure_dec(lexeme *list, int procedure_idx)
             {
                 printparseerror(4);
                 code = NULL;
-                return;
+                
             }
                 
             int symidx = MULTIPLEDECLARATIONCHECK(list[procedure_idx]);
@@ -312,7 +312,7 @@ void procedure_dec(lexeme *list, int procedure_idx)
             {
                 printparseerror(18);
                 code = NULL;
-                return;
+                
             }
             
             addToSymbolTable(3, list[procedure_idx].name, 0, curlevel, 0, 0);
@@ -322,7 +322,7 @@ void procedure_dec(lexeme *list, int procedure_idx)
             {
                 printparseerror(14);        // must end in semicolon
                 code = NULL;
-                return;
+                
             }
             
             procedure_idx++;
@@ -333,7 +333,7 @@ void procedure_dec(lexeme *list, int procedure_idx)
             {
                 printparseerror(14);
                 code = NULL;
-                return;
+                
             }
             
             procedure_idx++;
@@ -352,27 +352,27 @@ void statement(lexeme *list, int procedure_idx)
             if (findsymbol(list[procedure_idx],1) != findsymbol(list[procedure_idx],3))
             {
                 printparseerror(7);         // does not have kind 3
-                code = NULL;
-                return;
+                
+                
             }
             else
             {
                 printparseerror(6);         // does not have kind 2
-                code = NULL;
-                return;
+                
+                
             }
         }
         procedure_idx++;
         if(list[procedure_idx].type!=assignsym)
         {
             printparseerror(5);         // missing :=
-            code = NULL;
-            return;
+            
+            
         }
         procedure_idx++;
         expression(list,procedure_idx);
         emit(4, curlevel-table[symldx].level, table[symldx].addr);          //STO
-        return;
+        
     }
     if(list[procedure_idx].type==beginsym)
     {
@@ -387,18 +387,18 @@ void statement(lexeme *list, int procedure_idx)
             if((list[procedure_idx].type==identsym)||(list[procedure_idx].type==beginsym)||(list[procedure_idx].type==ifsym)||(list[procedure_idx].type==whilesym)||(list[procedure_idx].type==readsym)||(list[procedure_idx].type==writesym)||(list[procedure_idx].type==callsym))
             {
                 printparseerror(16);
-                code = NULL;
-                return;
+                
+                
             }
             else
             {
                 printparseerror(15);
-                code = NULL;
-                return;
+                
+                
             }
         }
         procedure_idx++;
-        return;
+        
         if(list[procedure_idx].type==ifsym)
         {
             procedure_idx++;
@@ -409,8 +409,8 @@ void statement(lexeme *list, int procedure_idx)
             if(list[procedure_idx].type!=thensym)
             {
                 printparseerror(8);
-                code = NULL;
-                return;
+                
+                
             }
             procedure_idx++;
             statement(list,procedure_idx);
@@ -427,7 +427,7 @@ void statement(lexeme *list, int procedure_idx)
             {
                 code[jpcIdx].m = cIndex*3;
             }
-            return;
+            
         }
         if(list[procedure_idx].type==whilesym)
         {
@@ -438,8 +438,8 @@ void statement(lexeme *list, int procedure_idx)
             if(list[procedure_idx].type!=dosym)
             {
                 printparseerror(9);
-                code = NULL;
-                return;
+                
+                
             }
             procedure_idx++;
             int jpcIdx = cIndex;
@@ -447,7 +447,7 @@ void statement(lexeme *list, int procedure_idx)
             statement(list,procedure_idx);
             emit(7,curlevel,loopIdx*3);
             code[jpcIdx].m = cIndex*3;
-            return;
+            
         }
         if(list[procedure_idx].type==readsym)
         {
@@ -455,8 +455,8 @@ void statement(lexeme *list, int procedure_idx)
             if(list[procedure_idx].type!=identsym)
             {
                 printparseerror(6);         // missing identifier
-                code = NULL;
-                return;
+                
+                
             }
             int symIdx = findsymbol(list[procedure_idx],2);
             if(symIdx == -1)
@@ -464,27 +464,27 @@ void statement(lexeme *list, int procedure_idx)
                 if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],3))
                 {
                     printparseerror(6);         //missing kind 2
-                    code = NULL;
-                    return;
+                    
+                    
                 }
                 else
                 {
                     printparseerror(19);
-                    code = NULL;
-                    return;
+                    
+                    
                 }
             }
             procedure_idx++;
             emit(9, curlevel,2); //READ
             emit(4, curlevel-table[symIdx].level, table[symIdx].addr); //STO
-            return;
+            
         }
         if(list[procedure_idx].type==writesym)
         {
             procedure_idx++;
             expression(list,procedure_idx);
             emit(9,curlevel,1); //WRITE
-            return;
+            
         }
         if(list[procedure_idx].type==callsym)
         {
@@ -495,14 +495,14 @@ void statement(lexeme *list, int procedure_idx)
                 if(findsymbol(list[procedure_idx],1)!=findsymbol(list[procedure_idx],2))
                 {
                     printparseerror(7);         //missing kind 3
-                    code = NULL;
-                    return;
+                    
+                    
                 }
                 else
                 {
                     printparseerror(19);
-                    code = NULL;
-                    return;
+                    
+                    
                 }
             }
             procedure_idx++;
@@ -615,8 +615,8 @@ void expression(lexeme *list, int procedure_idx)
     if((list[procedure_idx].type==lparensym)||(list[procedure_idx].type==identsym)||(list[procedure_idx].type==numbersym)||(list[procedure_idx].type==oddsym)) // identifier number odd
     {
         printparseerror(17);
-        code = NULL;
-        return;
+        
+        
     }
 }
     
@@ -658,14 +658,14 @@ void factor(lexeme *list, int procedure_idx)
             if(findsymbol(list[procedure_idx],3)!=-1)
             {
                 printparseerror(19);
-                code = NULL;
-                return;
+                
+                
             }
             else
             {
                 printparseerror(18);
-                code = NULL;
-                return;
+                
+                
             }
         }
         
@@ -690,16 +690,16 @@ void factor(lexeme *list, int procedure_idx)
         if(list[procedure_idx].type!=rparensym)
         {
             printparseerror(11);
-            code = NULL;
-            return;
+            
+            
         }
         procedure_idx++;
     }
     else
     {
         printparseerror(12);
-        code = NULL;
-        return;
+        
+        
     }
 }
         
@@ -771,6 +771,8 @@ void printparseerror(int err_code)
     
     free(code);
     free(table);
+    code = NULL;
+    exit(0);
 }
 
 void printsymboltable()
