@@ -106,11 +106,11 @@ int findsymbol(lexeme token, int k)
     // linear search symbol table for the token backwards
     for (i = tIndex; i >= 0; i--)
     {
-        printf("%d %s %s %d %d\n ", i, table[i].name, token.name, table[i].kind, k);
         // correct name AND kind value AND is unmarked.
-        if ((table[i].name == token.name) && (table[i].kind == k) && (table[i].mark == 0))
+        if (strcmp(table[i].name, token.name) == 0)
         {
-            return i;
+            if (table[i].kind == k)
+                return i;
         }
     }
     // if not found
