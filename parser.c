@@ -86,10 +86,8 @@ int MULTIPLEDECLARATIONCHECK(lexeme token)
         if (strcmp(table[i].name, token.name) == 0)
         {
             // checks to see if it’s unmarked
-            if (table[i].mark == 0)
+            if (table[i].mark == 0 && table[i].level == curlevel)
             {
-                // if level is = to current level, return index
-                if (table[i].level == curlevel)
                     return i;
             }
         }
@@ -107,12 +105,10 @@ int findsymbol(lexeme token, int k)
     for (i = 0; i < tIndex; i++)
     {
         // correct name AND kind value AND is unmarked.
-        
         if (strcmp(table[i].name, token.name) == 0)
         {
             if (table[i].kind == k && table[i].mark == 0)
             {
-                //printf("%s %s %d %d %d      %d %d\n", table[i].name, token.name, table[i].kind, k , table[i].mark, maxlevel, table[i].level);
                 if(table[i].level >= maxlevel)
                 {
                     maxlevel = table[i].level;
@@ -161,7 +157,7 @@ void program(lexeme *list)
         printparseerror(1);
     }
         
-    emit(9, curlevel, 3);        // HALT
+    emit(9, 0, 3);        // HALT
         
     for (i = 0; i < cIndex; i++)
     {
@@ -256,10 +252,12 @@ int var_declaration(lexeme *list)
                 
             if (symidx != -1)
                 printparseerror(18);
+            
             if (curlevel == 0)
                 addToSymbolTable(2, list[procedure_idx].name, 0, curlevel, numVars - 1, 0);
             else
                 addToSymbolTable(2, list[procedure_idx].name, 0, curlevel, numVars+2, 0);
+            
             procedure_idx++;
             
         }while (list[procedure_idx].type == commasym);
@@ -312,8 +310,8 @@ void statement(lexeme *list)
     if(list[procedure_idx].type==identsym)
     {
         int symldx = findsymbol(list[procedure_idx],2);
-        
-        if(symldx==-1)
+
+        if(symldx == -1)
         {
             if (findsymbol(list[procedure_idx],1) != findsymbol(list[procedure_idx],3))
                 printparseerror(7);         // does not have kind 3
@@ -577,7 +575,7 @@ void factor(lexeme *list)
         }
         
         if(symIdx_var==-1)
-            emit(1,0,table[symIdx_const].val);      // LIT
+            emit(1,curlevel,table[symIdx_const].val);      // LIT
         else if((symIdx_const=-1)|| (table[symIdx_var].level) > (table[symIdx_const].level))
             emit(3, curlevel-table[symIdx_var].level, table[symIdx_var].addr);      //LOD
         else
