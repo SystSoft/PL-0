@@ -101,26 +101,34 @@ int MULTIPLEDECLARATIONCHECK(lexeme token)
 
 int findsymbol(lexeme token, int k)
 {
-    int i;
+    int i, maxIndex = -1, maxlevel = -1;
     
-    // linear search symbol table for the token backwards
-    for (i = tIndex; i >= 0; i--)
+    // linear search symbol table for the token
+    for (i = 0; i < tIndex; i++)
     {
         // correct name AND kind value AND is unmarked.
+        
         if (strcmp(table[i].name, token.name) == 0)
         {
-            if (table[i].kind == k)
-                return i;
+            if (table[i].kind == k && table[i].mark == 0)
+            {
+                //printf("%s %s %d %d %d      %d %d\n", table[i].name, token.name, table[i].kind, k , table[i].mark, maxlevel, table[i].level);
+                if(table[i].level >= maxlevel)
+                {
+                    maxlevel = table[i].level;
+                    maxIndex = i;
+                }
+            }
+                
         }
     }
-    // if not found
-    return -1;
+    return maxIndex;
 }
 
 void mark()
 {
     // linear search symbol table for the token backwards
-    int i = tIndex;
+    int i;;
     
     // stop when it finds an unmarked entry whose level is less than the current level
     for (i = tIndex; i >= 0; i--)
