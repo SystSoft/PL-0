@@ -104,10 +104,11 @@ int findsymbol(lexeme token, int k)
     int i;
     
     // linear search symbol table for the token backwards
-    for (i = tIndex; i > 0; i--)
+    for (i = tIndex; i >= 0; i--)
     {
+        printf("%d %s %s %d %d\n ", i, table[i].name, token.name, table[i].kind, k);
         // correct name AND kind value AND is unmarked.
-        if (table[i].name == token.name && table[i].kind == k && table[i].mark == 0)
+        if ((table[i].name == token.name) && (table[i].kind == k) && (table[i].mark == 0))
         {
             return i;
         }
@@ -122,7 +123,7 @@ void mark()
     int i = tIndex;
     
     // stop when it finds an unmarked entry whose level is less than the current level
-    while (table[i].mark == 0 && table[i].level > curlevel)
+    for (i = tIndex; i >= 0; i--)
     {
         // ignores marked entries
         if (table[i].mark == 1)
@@ -131,7 +132,11 @@ void mark()
         // if entry’s level is equal to the current level, it marks that entry
         if (table[i].level == curlevel)
             table[i].mark = 1;
+        
+        if (table[i].mark == 0 && table[i].level < curlevel)
+            break;
     }
+    
 }
 
 void program(lexeme *list)
@@ -164,6 +169,7 @@ void block(lexeme *list)
     
     curlevel++;
     procedure_idx = tIndex - 1;
+    
     const_declaration(list);
     
     x = var_declaration(list);
