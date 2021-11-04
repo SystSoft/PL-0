@@ -83,7 +83,7 @@ int MULTIPLEDECLARATIONCHECK(lexeme token)
     for (i = 0; i < tIndex; i++)
     {
         // if symbol table has the name given
-        if (table[i].name == token.name)
+        if (strcmp(table[i].name, token.name) == 0)
         {
             // checks to see if it’s unmarked
             if (table[i].mark == 0)
